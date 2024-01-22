@@ -10,7 +10,7 @@ mkdir -p QC_Reports
 fastqc ERR5743893_1.fastq ERR5743893_2.fastq --outdir QC_Reports
 
 # Generate MultiQC Report for all by doing:
-"""cd QC_Reports"""
+cd QC_Reports
 multiqc .
 
 # Directory to store the results from BWA-MEM
@@ -33,3 +33,13 @@ samtools index Mapping/ERR5743893.sorted.bam
 
 # Index the reference genome
 samtools faidx MN908947.fasta
+
+# Variant Calling using freebayes
+freebayes -f MN908947.fasta Mapping/ERR5743893.sorted.bam > ERR5743893.vcf
+
+# Compress VCF Output
+bgzip ERR5743893.vcf
+tabix ERR5743893.vcf.gz
+
+# View the statistics of the VCF
+bcftools stats ERR5743893.vcf.gz > ERR5743893.stats
